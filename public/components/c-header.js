@@ -101,5 +101,39 @@ export default {
 </c-navigation>
       `,
     },
+    {
+      title: 'Items with many links',
+      description: 'More solution',
+      content: `
+<c-header
+  site-name='Application'
+  short-name='App'>
+  <a href="/" slot="items">global</a>
+  <a href="/" slot="items">scania</a>
+</c-header>
+
+<c-navigation slot="navigation">
+  <a href='/one' active='' slot='primary-items'>one</a>
+  <a href='/' slot='primary-items'>two</a>
+  <a href='/' slot='primary-items'>three</a>
+  <a href='/' slot='primary-items'>four</a>
+  <a href='/' slot='primary-items'>five</a>
+  <a href='/' slot='primary-items'>six</a>
+  <a href='/' slot='primary-items'>seven</a>
+  <a href='/' slot='primary-items'>eight</a>
+  <a href='/' slot='primary-items'>nine</a>
+  <a href='/' slot='primary-items'>ten</a>
+  <a href='/' slot='primary-items'>eleven</a>
+  <a href='/' slot='primary-items'>twelve</a>
+  <a href='/' slot='secondary-items'>first</a>
+
+  <c-navigation slot='sub' target='/one' active=''>
+    <a href='/One' slot='primary-items' active=''>One 1</a>
+    <a href='/One2' slot='primary-items'>One 2</a>
+    <a href='/One3' slot='secondary-items'>One 3</a>
+  </c-navigation>
+</c-navigation>
+      `,
+    },
   ],
 };

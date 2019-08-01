@@ -85,6 +85,52 @@ export class Navigation {
     }
   }
 
+  @Listen('window:resize')
+  initMoreDropdown() {
+    const navbar = (this.el.shadowRoot || this.el).querySelector('.navbar');
+
+
+    const secondary = (this.el.shadowRoot || this.el).querySelector('.navbar-collapse:last-of-type');
+
+
+    const dropdown = (this.el.shadowRoot || this.el).querySelector('.dropdown .dropdown-menu');
+
+
+    const primaryItems = this.el.querySelectorAll('[slot=primary-items]');
+
+
+    const moreItem = (this.el.shadowRoot || this.el).querySelector('.dropdown.nav-item');
+    let totalItemWidth = 0; let lastItem; let
+      firstItem;
+
+    const availableSpace = navbar.clientWidth - moreItem.clientWidth - (secondary ? secondary.clientWidth : 0);
+
+    primaryItems.forEach((item) => {
+      totalItemWidth += item.clientWidth;
+      const nextSibling = item.nextElementSibling.getAttribute('slot');
+      if (item.parentElement.getAttribute('slot') !== 'sub') {
+        if (nextSibling === 'sub' || nextSibling === 'secondary-items') {
+          lastItem = item;
+        }
+      }
+    });
+
+    if (totalItemWidth > availableSpace) {
+      lastItem.setAttribute('data-width', `${lastItem.clientWidth}`);
+      dropdown.prepend(lastItem);
+      this.initMoreDropdown();
+    } else {
+      firstItem = (this.el.shadowRoot || this.el).querySelector('.dropdown .dropdown-menu a:first-child');
+
+      if (firstItem) {
+        const firstWidth = parseInt(firstItem.getAttribute('data-width'), 10);
+        if (totalItemWidth + firstWidth < availableSpace) {
+          lastItem.parentNode.insertBefore(firstItem, lastItem.nextSibling);
+        }
+      }
+    }
+  }
+
   toggleNavigation(open) {
     this.store.dispatch({ type: actions.TOGGLE_NAVIGATION, open });
   }
@@ -137,6 +183,7 @@ export class Navigation {
   }
 
   componentDidUpdate() {
+    this.initMoreDropdown();
     // fallback of sticky on IE
     if (!document.head.attachShadow) {
       setTimeout(() => {
@@ -204,6 +251,11 @@ export class Navigation {
             }) }
 
             <slot name="primary-items" />
+            <div class="dropdown nav-item nav-link">
+              <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">more</a>
+
+              <div class="dropdown-menu"></div>
+            </div>
           </nav>
         </div>
 
