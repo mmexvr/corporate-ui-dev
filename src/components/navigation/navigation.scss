@@ -47,6 +47,9 @@
         margin-right: 5px;
       }
     }
+    > .dropdown {
+      display: none;
+    }
   }
 }
 
@@ -72,8 +75,17 @@
       }
     }
 
-    .navbar-nav {
+    .navbar-collapse {
+      &:first-child {
+        flex-grow: 1;
+      }
+      &:last-of-type {
+        flex-grow: 0;
+      }
+    }
 
+    .navbar-nav {
+      flex-grow: 1;
       .nav-item {
 
         &.toggle-sub {

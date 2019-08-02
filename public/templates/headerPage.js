@@ -12,15 +12,26 @@ export default {
         <a href="/" slot="items">global</a>
         <a href="/" slot="items">scania</a>
       </c-header>
-      <c-navigation>
-        <a href='/home' slot='primary-items'>home</a>
-        <a href='/about' slot='primary-items' active=''>about</a>
-        <a href='/more' slot='secondary-items'>more</a>
+      <c-navigation slot="navigation">
+        <a href='/one' active='' slot='primary-items'>one</a>
+        <a href='/' slot='primary-items'>two</a>
+        <a href='/' slot='primary-items'>three</a>
+        <a href='/' slot='primary-items'>four</a>
+        <a href='/' slot='primary-items'>five</a>
+        <a href='/' slot='primary-items'>six</a>
+        <a href='/' slot='primary-items'>seven</a>
+        <a href='/' slot='primary-items'>eight</a>
+        <a href='/' slot='primary-items'>nine</a>
+        <a href='/' slot='primary-items'>ten</a>
+        <a href='/' slot='primary-items'>eleven</a>
+        <a href='/' slot='primary-items'>twelve</a>
+        <a href='/' slot='secondary-items'>first</a>
+        <a href='/' slot='secondary-items'>second</a>
 
-        <c-navigation slot='sub' target='/about' active=''>
-          <a href='/about' slot='primary-items' active=''>About 1</a>
-          <a href='/about2' slot='primary-items'>About 2</a>
-          <a href='/about3' slot='secondary-items'>About 3</a>
+        <c-navigation slot='sub' target='/one' active=''>
+          <a href='/One' slot='primary-items' active=''>One 1</a>
+          <a href='/One2' slot='primary-items'>One 2</a>
+          <a href='/One3' slot='secondary-items'>One 3</a>
         </c-navigation>
       </c-navigation>
         <c-content>

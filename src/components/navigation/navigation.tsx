@@ -1,5 +1,6 @@
 import {
-  Component, Prop, State, Element, Watch, Listen,
+  Component, Prop, State, Element, Watch, Listen, Event,
+  EventEmitter, // eslint-disable-line no-unused-vars
 } from '@stencil/core';
 
 import { actions } from '../../store';
@@ -38,6 +39,8 @@ export class Navigation {
 
   @State() isSub: boolean;
 
+  @State() ddToggle = false;
+
   @State() tagName: string;
 
   @State() currentTheme: object;
@@ -49,6 +52,8 @@ export class Navigation {
   @State() scrollPos = 0;
 
   @Element() el: HTMLElement;
+
+  @Event() onDdToggle: EventEmitter;
 
   @Watch('primaryItems')
   setPrimaryItems(items) {
@@ -88,18 +93,10 @@ export class Navigation {
   @Listen('window:resize')
   initMoreDropdown() {
     const navbar = (this.el.shadowRoot || this.el).querySelector('.navbar');
-
-
     const secondary = (this.el.shadowRoot || this.el).querySelector('.navbar-collapse:last-of-type');
-
-
     const dropdown = (this.el.shadowRoot || this.el).querySelector('.dropdown .dropdown-menu');
-
-
     const primaryItems = this.el.querySelectorAll('[slot=primary-items]');
-
-
-    const moreItem = (this.el.shadowRoot || this.el).querySelector('.dropdown.nav-item');
+    const moreItem = (this.el.shadowRoot || this.el).querySelector('.dropdown');
     let totalItemWidth = 0; let lastItem; let
       firstItem;
 
@@ -116,7 +113,10 @@ export class Navigation {
     });
 
     if (totalItemWidth > availableSpace) {
-      lastItem.setAttribute('data-width', `${lastItem.clientWidth}`);
+      if (lastItem) {
+        lastItem.setAttribute('data-width', `${lastItem.clientWidth}`);
+        lastItem.classList.add('dropdown-item');
+      }
       dropdown.prepend(lastItem);
       this.initMoreDropdown();
     } else {
@@ -125,9 +125,16 @@ export class Navigation {
       if (firstItem) {
         const firstWidth = parseInt(firstItem.getAttribute('data-width'), 10);
         if (totalItemWidth + firstWidth < availableSpace) {
+          firstItem.classList.remove('dropdown-item');
           lastItem.parentNode.insertBefore(firstItem, lastItem.nextSibling);
         }
       }
+    }
+
+    if (moreItem.querySelector('.dropdown-menu').children.length > 0) {
+      moreItem.setAttribute('style', 'display:block;');
+    } else {
+      moreItem.setAttribute('style', 'display:none;');
     }
   }
 
@@ -224,6 +231,11 @@ export class Navigation {
     }
   }
 
+  dropdownToggle() : void {
+    this.ddToggle = !this.ddToggle;
+    this.onDdToggle.emit({ visible: this.ddToggle });
+  }
+
   hostData() {
     return {
       open: this.target === this.navigationExpanded || (!this.isSub && this.navigationExpanded) ? 'true' : 'false',
@@ -251,10 +263,10 @@ export class Navigation {
             }) }
 
             <slot name="primary-items" />
-            <div class="dropdown nav-item nav-link">
-              <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">more</a>
+            <div class="dropdown" onClick={() => this.dropdownToggle()}>
+              <a class="dropdown-toggle nav-item nav-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">more</a>
 
-              <div class="dropdown-menu"></div>
+              <div class={`dropdown-menu ${this.ddToggle ? 'show' : ''}`}></div>
             </div>
           </nav>
         </div>
