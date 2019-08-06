@@ -90,15 +90,23 @@ export class Navigation {
     }
   }
 
+  @Listen('window:click')
+  outsideClick(e) {
+    if (!e.path[0].matches('.dropdown-toggle')) {
+      if (this.ddToggle === true) this.ddToggle = false;
+    }
+  }
+
   @Listen('window:resize')
-  initMoreDropdown() {
+  initMoreDropdown(e) {
     const navbar = (this.el.shadowRoot || this.el).querySelector('.navbar');
-    const secondary = (this.el.shadowRoot || this.el).querySelector('.navbar-collapse:last-of-type');
+    const secondary = (this.el.shadowRoot || this.el).querySelector('.navbar-collapse:nth-child(2)');
     const dropdown = (this.el.shadowRoot || this.el).querySelector('.dropdown .dropdown-menu');
     const primaryItems = this.el.querySelectorAll('[slot=primary-items]');
     const moreItem = (this.el.shadowRoot || this.el).querySelector('.dropdown');
-    let totalItemWidth = 0; let lastItem; let
-      firstItem;
+    let totalItemWidth = 0;
+    let lastItem;
+    let firstItem;
 
     const availableSpace = navbar.clientWidth - moreItem.clientWidth - (secondary ? secondary.clientWidth : 0);
 
@@ -112,16 +120,22 @@ export class Navigation {
       }
     });
 
-    if (totalItemWidth > availableSpace) {
+    if (e.type === 'resize' && document.body.clientWidth < 992) {
+      const hiddenItems = dropdown.querySelectorAll('a');
+
+      hiddenItems.forEach(item => {
+        item.classList.remove('dropdown-item');
+        lastItem.parentNode.insertBefore(item, lastItem.nextSibling);
+      });
+    } else if (totalItemWidth > availableSpace && this.el.getAttribute('slot') !== 'sub') {
       if (lastItem) {
         lastItem.setAttribute('data-width', `${lastItem.clientWidth}`);
         lastItem.classList.add('dropdown-item');
       }
       dropdown.prepend(lastItem);
-      this.initMoreDropdown();
-    } else {
+      this.initMoreDropdown(e);
+    } else if (e.type === 'resize') {
       firstItem = (this.el.shadowRoot || this.el).querySelector('.dropdown .dropdown-menu a:first-child');
-
       if (firstItem) {
         const firstWidth = parseInt(firstItem.getAttribute('data-width'), 10);
         if (totalItemWidth + firstWidth < availableSpace) {
@@ -190,7 +204,11 @@ export class Navigation {
   }
 
   componentDidUpdate() {
-    this.initMoreDropdown();
+    // only if it is not a sub and only on desktop
+    if (this.el.getAttribute('slot') !== 'sub' && document.body.clientWidth > 992) {
+      this.initMoreDropdown({ type: 'didUpdate' });
+    }
+
     // fallback of sticky on IE
     if (!document.head.attachShadow) {
       setTimeout(() => {
@@ -231,7 +249,7 @@ export class Navigation {
     }
   }
 
-  dropdownToggle() : void {
+  dropdownToggle() :void{
     this.ddToggle = !this.ddToggle;
     this.onDdToggle.emit({ visible: this.ddToggle });
   }
