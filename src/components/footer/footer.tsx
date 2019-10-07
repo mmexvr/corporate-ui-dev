@@ -1,13 +1,15 @@
 import {
-  Component, Prop, State, Element, Watch,
+  Component, h, Prop, State, Element, Watch,
 } from '@stencil/core';
+
+import { ITheme } from '../../helpers/utils';
 
 @Component({
   tag: 'c-footer',
   styleUrl: 'footer.scss',
   shadow: true,
 })
-export class Footer {
+export class Footer implements ITheme {
   @Prop({ context: 'store' }) ContextStore: any;
 
   /** Per default, this will inherit the value from c-theme name property */

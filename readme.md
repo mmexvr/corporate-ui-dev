@@ -1,138 +1,94 @@
-[![Build Status](https://travis-ci.com/scania/corporate-ui-dev.svg?branch=master)](https://travis-ci.com/scania/corporate-ui-dev)
-[![Join Slack](https://img.shields.io/badge/slack-join-%23dd3072.svg)](https://join.slack.com/t/corporate-ui/shared_invite/enQtNTI4NzMzOTQ3NTg4LTI1OGNhZGE2OTY0NzUwYzExMTJmMTQ2NjcxOTdkMjc0NDhlM2JlYTEyODY2ODJjYzUxNmYxNzhhMTQ5MDhmOWQ)
-[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
-![](https://img.shields.io/github/license/scania/corporate-ui-dev.svg?style=flat)
+# Ionic PWA Toolkit
 
-# Corporate UI Development Repository
+The PWA Toolkit is a starting point for building Progressive Web Apps using Ionic and Stencil.
+This combination of tools gives you the ability to build a fast, efficient PWA out of the box.
 
-In this repository we're developing the next generation components for Corporate UI. We're improving a lot of our findings that we've done implementing the current production version of the library: https://github.com/scania/corporate-ui
+For more info check out our [homepage](https://ionicframework.com/pwa/toolkit)!
 
-## Table of contents
+## Features
 
-- [Quick start](#quick-start)
-- [Styling](#styling)
-- [Setup local environment](#setup-local-environment)
-- [Wiki](#wiki)
-- [Learn more](#learn-more)
-  - [Focus area](#focus-area)
-  - [Purpose](#purpose)
-  - [Tech stack](#tech-stack)
-  - [Testing](#testing)
-- [Contributing](#contributing)
-- [Community](#community)
-- [License](#license)
+* `@ionic/core` for the UI.
+* Stencil for the application logic and routing
+* Push Notifications setup
+* Unit Tests
+* Pre-rendering
+* Lazy-loading and code splitting
+* Intelligent Polyfills
+* Modern mode: ES6/ESM for new browser, ES5 for older
+* Service Worker, App manifest, iOS meta tags
+* Theming using CSS variables
 
-## Quick start
+## Getting Started
 
-Several options to add corporate-ui in the project: 
+To start building, clone this repo to a new directory:
 
-1. Add via CDN, link to the script by adding the following to the `<head></head>`.
-
-```html
-<script src="https://static.scania.com/build/global/4.x/corporate-ui.js"></script>
-```
-Replace the version number with the [available releases](https://github.com/scania/corporate-ui-dev/releases)
-
-2. Install corporate-ui via NPM package by running the command below.
-
-```
-npm i corporate-ui-dev
+```bash
+npm init stencil ionic-pwa
 ```
 
-Import component as a module with `defineCustomElements` function.
 
-```js
-import { defineCustomElements } from 'corporate-ui-dev';
+## Production
 
-defineCustomElements(['c-theme', 'c-footer', 'c-content']);
-// to import all components pass an 'all' value
-// defineCustomElements('all');
+To build for production, run:
+
+```bash
+npm run build
 ```
 
-See project examples for [Angular](https://github.com/scania/corporate-ui-angular) and [React](https://github.com/scania/corporate-ui-react).
+A production build includes:
 
-## Styling
+* Minified code bundles
+* Generated Service workers
+* App manifest
 
-A major change in the new setup is the configuration for styling. It enables the possibility to implement different brands styling with the use of `c-theme` component. The styling is now available as a separate package. All assets such as favicons, fonts, logotype, and wordmarks, now are added in the theme and are available in the theme package. 
+## Hosting
 
-To apply the styling, you need to add a theme package and use `c-theme` component. Check out [Scania theme repository](https://github.com/scania/scania-theme/) for detail documentation.
+Apps should be hosted on through HTTPS, and if possible, through a provider that supports HTTP2.
+One provider that does support this is [Firebase Hosting](https://firebase.google.com/docs/hosting/).
 
-## Setup local environment
+## H2 Push
 
-- Clone the Corporate UI Dev repo: `git clone https://github.com/scania/corporate-ui-dev.git`
-- Download and install node.js: https://nodejs.org/en/
-- If you're behind a firewall, CONFIGURE THE PROXY
-- From the corporate-ui-dev folder, run `npm i` to install package dependencies
-- Start the local setup by running `npm start`
-- Open your browser and go to [http://localhost:1337](http://localhost:1337)
+We recommend setting up HTTP2 Push on Firebase. H2 Push may sound complicated, but it's actually a simple concept. To learn about it, take a look at this [article](https://en.wikipedia.org/wiki/HTTP/2_Server_Push).
 
-To work on the Scania theme styling, here is how to setup the environment : 
+To set this up for `my-app`:
 
-- Clone and install `scania-theme` project (see instructions [here](https://github.com/scania/scania-theme))
-- Create a global symlink for `scania-theme` project with `npm link`. A symlink, short for symbolic link, is a shortcut that points to another directory or file on your system.
-- Tell `corporate-ui-dev` to use the global symlink with `npm link scania-theme`.
+* Do a production build of the app: `npm run build`
+* Serve your WWW folder locally using a local http server and open in your browser.
+  * https://www.npmjs.com/package/http-server works pretty well for this. You can serve your www folder by running `http-server www`.
+* Open the DevTools and look at the network tab.
+  * Reload the page and you should see all of your files show up in the network tab. Excluding the `sw.js` file, these are the files you want to H2 push.
+* List these files in the link headers of your firebase.json file. For a syntax reference, review this [article](https://w3c.github.io/preload/#server-push-http-2)
 
-```shell
-cd /path/to/scania-theme
-npm link
-npm start
+## Service Workers
 
-cd path/to/corporate-ui-dev
-npm link scania-theme
-npm start
+Service workers are generated via the Stencil build tool. For more information on how they can be configured, see the [Service Worker docs](https://stenciljs.com/docs/service-workers).
+
+## Developing with a Service Worker
+
+For most cases, you'll want to develop your app without generating a Service Worker. But if you'd like to test out Web Push Notifications or Background Sync, you'll need to have one generated. To generate a Service Worker during dev builds, we've added the npm script:
+
+```
+npm run start.sw
 ```
 
-## Requirements
+This will start a dev build and generate a Service Worker as well.
 
-**NodeJS: use 8.15 or newer stable version of node**
+## Unit Tests
 
-## Wiki
+To run the unit tests once, run:
 
-[Github wiki](https://github.com/scania/corporate-ui-dev/wiki) includes: 
-- Project examples in HTML, Angular, and React
-- Project structure
-- Components library
-- Components status
-- Browser support, and more. 
+```bash
+npm test
+```
 
-## Learn more
+To run the unit tests and watch for file changes during development, run:
 
-Corporate-UI 4 Beta: [What's new?](https://github.com/scania/corporate-ui-dev/releases/)
+```bash
+npm run test.watch
+```
 
-### Focus area
+## Testing your PWA's performance
 
-Focus is right now set on getting a solid architecture in place. Any of the basic components that you'll be able to view in this repository is not finalized when it comes to design and CSS values.
-
-### Purpose
-
-Corporate UI is a library for using and building web components as custom elements. Custom elements enables developers to in a really easy way apply branding guidelines and apply interaction patterns without having to build them all from scratch.
-
-### Tech stack
-
-Corporate UI outputs browser native code such as JavaScript, CSS and HTML. Although, behind the scenes a variety of tools are used. The technical infrastructure currently includes; Bootstrap, Sass, StencilJS, Redux, TSX, Travis, NPM, Gulp, esLint, Prettier, Jest, Puppeteer, Webpack and Storybook.
-
-### Testing
-
-Testing the components is done using the Stencil testing setup that includes unit test and End-to-End test. Both tests use Jest as the JavaScript testing solution. The browser environment for end-to-end testing is done using Puppeteer.
-
-To test locally:
-
-`npm test`
-
-## Contributing
-
-Please read through our [contributing guidelines](https://github.com/scania/corporate-ui-dev/blob/master/CONTRIBUTING.md) for the directions to create a pull request and coding standard.
-
-- [Report bug](https://github.com/scania/corporate-ui-dev/issues/new/choose)
-- [Request feature](https://github.com/scania/corporate-ui-dev/issues/new?assignees=&labels=Feature&template=feature_request.md&title=Feature+-+%22title+text%22)
-
-## Community
-
-Get in touch with the team and the community:
-- [Join us on slack](https://join.slack.com/t/corporate-ui/shared_invite/enQtNTI4NzMzOTQ3NTg4LTI1OGNhZGE2OTY0NzUwYzExMTJmMTQ2NjcxOTdkMjc0NDhlM2JlYTEyODY2ODJjYzUxNmYxNzhhMTQ5MDhmOWQ)
-- [Teams](https://teams.microsoft.com/l/team/19%3a1257007a64d44c64954acca27a9d4b46%40thread.skype/conversations?groupId=79f9bfeb-73e2-424d-9477-b236191ece5e&tenantId=3bc062e4-ac9d-4c17-b4dd-3aad637ff1ac)
-
-
-## License
-
-All CSS, HTML and JS code are available under the MIT license. The Scania brand identity, logos and photographs found in this repository are copyrighted Scania CV AB and are not available on an open source basis or to be used as examples or in any other way, if not specifically ordered by Scania CV AB.
+We recommend using https://www.webpagetest.org/easy with the `Run Lighthouse Audit` option turned on.
+This will give you an in depth look into your app's load performance on the average device connected to the average network.
+For more info on how to use webpagetest check out [this article](https://zoompf.com/blog/2015/07/the-seo-experts-guide-to-web-performance-using-webpagetest-2)

@@ -1,15 +1,19 @@
 import {
-  Component, Prop, State, Element, Watch, Listen,
+  Component, h, Prop, State, Element, Watch, Listen,
 } from '@stencil/core';
 
 import { actions } from '../../store';
+import { ITheme } from '../../helpers/utils';
 
 @Component({
   tag: 'c-navigation',
-  styleUrl: 'navigation.scss',
+  styleUrls: [
+    '../../components.scss',
+    'navigation.scss'
+  ],
   shadow: true,
 })
-export class Navigation {
+export class Navigation implements ITheme {
   @Prop({ context: 'store' }) ContextStore: any;
 
   /** Per default, this will inherit the value from c-theme name property */
@@ -17,12 +21,6 @@ export class Navigation {
 
   /** Set the orientation for the navigation (vertical or horisontal). The default is horisontal navigation. */
   @Prop() orientation = '';
-
-  /** Item links on the left side of the navigation */
-  @Prop({ mutable: true }) primaryItems: any;
-
-  /** Item links on the right side of the navigation. On vertical orientation, it will be added in order after primary-items. */
-  @Prop({ mutable: true }) secondaryItems: any;
 
   /** Used to show a text in front of generated items on desktop and add a describing text for navigating back in mobile mode for sub navigation */
   @Prop() caption: string;
@@ -55,23 +53,13 @@ export class Navigation {
 
   @Element() el: HTMLElement;
 
-  @Watch('primaryItems')
-  setPrimaryItems(items) {
-    this.primaryItems = this.parse(items);
-  }
-
-  @Watch('secondaryItems')
-  setSecondaryItems(items) {
-    this.secondaryItems = this.parse(items);
-  }
-
   @Watch('theme')
   setTheme(name = undefined) {
     this.theme = name || this.store.getState().theme.name;
     this.currentTheme = this.store.getState().themes[this.theme];
   }
 
-  @Listen('window:scroll')
+  @Listen('scroll', { target: 'window' })
   handleScroll() {
     let isStick = false;
     // try catch is used to avoid error in IE with getBoundingClientRect
@@ -92,7 +80,7 @@ export class Navigation {
     }
   }
 
-  @Listen('window:resize')
+  @Listen('resize', { target: 'window' })
   onResize() {
     this.navWidth = (document.querySelector('c-header') || {} as any).clientWidth;
     if (window.innerWidth < 992) this.el.removeAttribute('style');
@@ -110,8 +98,6 @@ export class Navigation {
     this.store = this.ContextStore || (window as any).CorporateUi.store;
 
     this.setTheme(this.theme);
-    this.setPrimaryItems(this.primaryItems);
-    this.setSecondaryItems(this.secondaryItems);
 
     this.store.subscribe(() => {
       this.navigationOpen = this.store.getState().navigation.open;
@@ -204,28 +190,10 @@ export class Navigation {
       <div class={`navbar-container ${this.navigationOpen ? ' open' : ''}`}>
         <nav class={`navbar navbar-expand-lg ${this.orientation}`}>
             <nav class='navbar-nav'>
-              { this.isSub
-                ? [
-                  this.caption ? <strong class="nav-item caption">{ this.caption }</strong> : '',
-                    <a href="#close" class="nav-item nav-link toggle-sub" onClick={(event) => this.open(event)}>{ this.caption || 'Back' }</a>,
-                ]
-                : ''
-              }
-
-              { this.primaryItems.map((item: any) => {
-                item.class = this.combineClasses(item.class);
-                return <a { ...item }></a>;
-              }) }
-
               <slot name="primary-items" />
             </nav>
 
             <nav class={`navbar-nav ${this.orientation !== 'vertical' ? 'ml-auto' : ''}`}>
-              { this.secondaryItems.map((item: any) => {
-                item.class = this.combineClasses(item.class);
-                return <a { ...item }></a>;
-              }) }
-
               <slot name="secondary-items" />
             </nav>
 

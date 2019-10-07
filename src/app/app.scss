@@ -1,0 +1,36 @@
+body {
+  overflow: hidden;
+}
+app-root {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 15% 85%;
+  grid-template-rows: 100%;
+  grid-template-areas: 
+    "navigation main";
+}
+app-navigation,
+nav {
+  grid-area: navigation;
+}
+main {
+  grid-area: main;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  height: 100vh;
+}
+header {
+  background-color: #000;
+  color: #fff;
+  padding: 20px;
+
+  h2 {
+    margin: 0;
+  }
+}
+.content {
+  flex-grow: 1;
+  flex-shrink: 0;
+  padding: 20px;
+}

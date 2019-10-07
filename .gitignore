@@ -1,15 +1,5 @@
-# Compiled from Stencil
-.stencil/
-.build/
-.www/
-.data/
-
-# Compiled theme
-src/themes.built/
-
-# Compiled from gulpfile.babel.js
-.storybook/
 dist/
+!www/favicon.ico
 www/
 
 *~
@@ -21,8 +11,8 @@ www/
 log.txt
 *.sublime-project
 *.sublime-workspace
-*.d.ts
 
+.stencil/
 .idea/
 .vscode/
 .sass-cache/
@@ -34,6 +24,3 @@ $RECYCLE.BIN/
 Thumbs.db
 UserInterfaceState.xcuserstate
 .env
-.npmrc
-
-package-lock.json

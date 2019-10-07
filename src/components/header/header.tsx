@@ -1,15 +1,19 @@
 import {
-  Component, Prop, State, Element, Watch,
+  Component, h, Prop, State, Element, Watch,
 } from '@stencil/core';
 
 import { actions } from '../../store';
+import { ITheme } from '../../helpers/utils';
 
 @Component({
   tag: 'c-header',
-  styleUrl: 'header.scss',
+  styleUrls: [
+    '../../components.scss',
+    'header.scss'
+  ],
   shadow: true,
 })
-export class Header {
+export class Header implements ITheme {
   @Prop({ context: 'store' }) ContextStore: any;
 
   /** Per default, this will inherit the value from c-theme name property */
@@ -54,6 +58,7 @@ export class Header {
 
   toggleNavigation(open) {
     this.store.dispatch({ type: actions.TOGGLE_NAVIGATION, open });
+
     setTimeout(() => {
       this.navigationOpen ? document.body.classList.add('nav-show') : document.body.classList.remove('nav-show');
     }, 350);
@@ -104,7 +109,6 @@ export class Header {
             <span class='navbar-toggler-icon'></span>
           </button> : ''
         }
-
 
         <a href={ this.siteUrl } class='navbar-brand collapse'></a>
         <strong class='navbar-title'>{ this.siteName }</strong>

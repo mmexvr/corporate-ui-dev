@@ -1,23 +1,18 @@
 // Required
-@import 'node_modules/bootstrap/scss/functions';
-@import 'node_modules/bootstrap/scss/variables';
-@import 'node_modules/bootstrap/scss/mixins';
-@import 'node_modules/bootstrap/scss/transitions';
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/mixins';
+@import 'bootstrap/scss/transitions';
 
 // Optional
-@import 'node_modules/bootstrap/scss/utilities';
-@import 'node_modules/bootstrap/scss/navbar';
-@import 'node_modules/bootstrap/scss/nav';
+@import 'bootstrap/scss/utilities';
+@import 'bootstrap/scss/navbar';
+@import 'bootstrap/scss/nav';
 
-@import '../../components.scss';
+// @import '../../components.scss';
 
 :host {
-  display: block;
-}
-
-::slotted(c-navigation),
-c-navigation {
-  width: 100%;
+  --link-color: #999;
 }
 
 .navbar-toggler-icon {
@@ -29,6 +24,7 @@ c-navigation {
 }
 
 @media (min-width: 992px) {
+
   .navbar-expand-lg .navbar-brand {
     display: inline-block;
   }

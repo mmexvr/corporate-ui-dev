@@ -1,0 +1,26 @@
+:root {
+  --link-color: #38e;
+}
+
+html,
+body {
+  display: flex;
+  flex-direction: column;
+}
+html {
+  height: 100%;
+}
+body {
+  flex: 1;
+  margin: 0;
+}
+
+app-root,
+#app-root,
+#app {
+  flex: 1;
+}
+
+a {
+  color: var(--link-color);
+}
